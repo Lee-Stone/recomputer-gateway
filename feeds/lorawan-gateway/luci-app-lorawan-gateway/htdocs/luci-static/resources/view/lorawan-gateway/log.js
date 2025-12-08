@@ -57,7 +57,7 @@ return view.extend({
 			location.href = L.url('admin/lorawan-gateway/lora');
 		};
 
-		o = navSection.option(form.Button, '_mqtt', _('Go to RS485 Configuration'));
+		o = navSection.option(form.Button, '_rs485', _('Go to RS485 Configuration'));
 		o.inputstyle = 'action';
 		o.inputtitle = _('RS485');
 		o.onclick = function() {

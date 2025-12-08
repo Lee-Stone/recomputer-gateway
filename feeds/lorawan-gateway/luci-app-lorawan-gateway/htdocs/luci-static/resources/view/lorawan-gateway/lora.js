@@ -116,7 +116,7 @@ return view.extend({
 		navSection.anonymous = true;
 		navSection.addremove = false;
 
-		o = navSection.option(form.Button, '_mqtt', _('Go to RS485 Configuration'));
+		o = navSection.option(form.Button, '_rs485', _('Go to RS485 Configuration'));
 		o.inputstyle = 'action';
 		o.inputtitle = _('RS485');
 		o.onclick = function() {
