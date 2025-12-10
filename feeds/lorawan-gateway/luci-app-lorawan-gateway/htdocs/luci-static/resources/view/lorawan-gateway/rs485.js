@@ -12,8 +12,7 @@ return view.extend({
         var m = new form.Map('lorawan-gateway', _('RS485 Configuration'), _('Configure RS485 bridge parameters.'));
 
         // Main Section with two tabs
-        var s = m.section(form.TypedSection, 'serial', _('RS485 Settings'));
-        s.anonymous = true;
+        var s = m.section(form.NamedSection, 'serial', _('RS485 Settings'));
         s.addremove = false;
         
         // Create two tabs
@@ -69,6 +68,81 @@ return view.extend({
         o.value("space", _("Space"));
         o.default = "none";
         o.rmempty = false;
+
+        // Serial Tool UI Container
+        o = s.taboption('serial', form.DummyValue, '_tool_ui');
+        o.render = function() {
+            return E('div', { 'class': 'serial-tool-container' }, [
+                E('style', [
+                    '.serial-tool-container { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }',
+                    '.tool-row { display: flex; gap: 10px; align-items: stretch; }',
+                    '.tool-left { flex: 7; display: flex; flex-direction: column; }',
+                    '.tool-right { flex: 3; display: flex; flex-direction: column; gap: 5px; }',
+                    '.rx-box { flex: 1; width: 100%; resize: none; font-family: monospace; padding: 5px; border: 1px solid #ccc; box-sizing: border-box; }',
+                    '.tx-box { height: 100px; width: 100%; resize: none; font-family: monospace; padding: 5px; border: 1px solid #ccc; box-sizing: border-box; }',
+                    '#serial_settings_panel .cbi-value { margin-bottom: 0; padding: 5px 0; border: none; }',
+                    '#serial_settings_panel .cbi-value-title { width: 40%; float: left; text-align: left; font-weight: normal; }',
+                    '#serial_settings_panel .cbi-value-field { width: 60%; float: left; }',
+                    '.tool-btn { width: 100%; margin-top: 5px; }'
+                ]),
+                // Top Row: RX + Settings
+                E('div', { 'class': 'tool-row' }, [
+                    E('div', { 'class': 'tool-left' }, [
+                        E('label', { 'style': 'font-weight:bold; margin-bottom:5px;' }, _('Receive Buffer')),
+                        E('textarea', { 'id': 'serial_rx', 'class': 'rx-box', 'readonly': 'readonly' })
+                    ]),
+                    E('div', { 'class': 'tool-right', 'id': 'serial_settings_panel' }, [
+                        // Settings will be moved here
+                        E('div', { 'id': 'settings_placeholder' }),
+                        E('button', { 'class': 'cbi-button cbi-button-apply tool-btn', 'id': 'btn_open_close' }, _('Open Serial Port')),
+                        E('button', { 'class': 'cbi-button cbi-button-reset tool-btn', 'id': 'btn_clear_rx' }, _('Clear Receive'))
+                    ])
+                ]),
+                // Bottom Row: TX + Controls
+                E('div', { 'class': 'tool-row' }, [
+                    E('div', { 'class': 'tool-left' }, [
+                        E('label', { 'style': 'font-weight:bold; margin-bottom:5px;' }, _('Send Buffer')),
+                        E('textarea', { 'id': 'serial_tx', 'class': 'tx-box' })
+                    ]),
+                    E('div', { 'class': 'tool-right' }, [
+                        E('div', { 'style': 'height: 24px;' }), // Spacer for label alignment
+                        E('button', { 'class': 'cbi-button cbi-button-action tool-btn', 'id': 'btn_send' }, _('Send')),
+                        E('button', { 'class': 'cbi-button cbi-button-reset tool-btn', 'id': 'btn_clear_tx' }, _('Clear Send'))
+                    ])
+                ]),
+                // Script to move widgets and handle events
+                E('script', [
+                    'requestAnimationFrame(function() {',
+                    '	var panel = document.getElementById("settings_placeholder");',
+                    '	var widgets = ["device", "baudrate", "databit", "stopbit", "checkbit"];',
+                    '	widgets.forEach(function(w) {',
+                    '		var el = document.getElementById("cbi-lorawan-gateway-serial-" + w);',
+                    '		if (el && panel) {',
+                    '			panel.appendChild(el);',
+                    '		}',
+                    '	});',
+                    '	var btnOpen = document.getElementById("btn_open_close");',
+                    '	if (btnOpen) {',
+                    '		btnOpen.onclick = function(e) {',
+                    '			e.preventDefault();',
+                    '			var mqttEnabled = document.getElementById("cbid.lorawan-gateway.serial.mqtt_enabled");',
+                    '			if (mqttEnabled && mqttEnabled.checked) {',
+                    '				alert("Please disable MQTT to enable serial port tool");',
+                    '				return;',
+                    '			}',
+                    '			if (this.innerText === "Open Serial Port") {',
+                    '				this.innerText = "Close Serial Port";',
+                    '				this.className = "cbi-button cbi-button-reset tool-btn";',
+                    '			} else {',
+                    '				this.innerText = "Open Serial Port";',
+                    '				this.className = "cbi-button cbi-button-apply tool-btn";',
+                    '			}',
+                    '		};',
+                    '	}',
+                    '});'
+                ].join('\n'))
+            ]);
+        };
         
         // Connection section header
         o = s.taboption('mqtt', form.DummyValue, "_connection_header");
