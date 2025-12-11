@@ -19,16 +19,6 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
- 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
       - name: Maximize build space
         uses: easimon/maximize-build-space@master
         with:
@@ -40,6 +30,16 @@ jobs:
           remove-codeql: 'true'
           remove-docker-images: 'true'
 
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+ 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Install build dependencies
         run: |
           sudo apt update
@@ -49,7 +49,8 @@ jobs:
 
       - name: Build for recomputer-gateway
         run: |
-          git submodule update --init --recursive && cd openwrt
+          git submodule update --init --recursive
+          cd openwrt
           rm -r feeds.conf.default && cp ../feeds.conf.default feeds.conf.default
           ./scripts/feeds update -a
           ./scripts/feeds install -a
