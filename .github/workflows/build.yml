@@ -50,11 +50,9 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
         
-          # Fix Rust CI LLVM download issue
-          if [ -f "feeds/packages/lang/rust/Makefile" ]; then
-            sed -i 's/download-ci-llvm = true/download-ci-llvm = "if-unchanged"/g' feeds/packages/lang/rust/rust-host.template
-            echo "Fixed Rust LLVM CI configuration"
-          fi
+          sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=if-unchanged/g' feeds/packages/lang/rust/Makefile
+          echo "=== Fixed Rust LLVM CI configuration ==="
+          grep "download-ci-llvm" feeds/packages/lang/rust/Makefile  
           
           make defconfig
           rm -r .config && cp ../.config .config
