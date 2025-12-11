@@ -49,14 +49,18 @@ jobs:
           rm -r feeds.conf.default && cp ../feeds.conf.default feeds.conf.default
           ./scripts/feeds update -a
           ./scripts/feeds install -a
-        
-          sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/g' feeds/packages/lang/rust/Makefile
-          echo "=== Fixed Rust LLVM CI configuration ==="
-          grep "download-ci-llvm" feeds/packages/lang/rust/Makefile  
-          
+       
           make defconfig
           rm -r .config && cp ../.config .config
           make defconfig
+          
+          unset CI
+          unset GITHUB_ACTIONS
+          unset CONTINUOUS_INTEGRATION
+          echo "=== CI environment check ==="
+          echo "CI=${CI:-not set}"
+          echo "GITHUB_ACTIONS=${GITHUB_ACTIONS:-not set}"
+
           make -j$(nproc) V=s
       
       - name: Upload recomputer-gateway artifacts
