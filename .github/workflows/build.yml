@@ -38,10 +38,10 @@ jobs:
       - name: Build for recomputer-gateway
         run: |
           git submodule update --init --recursive && cd openwrt
-          rm -r .config && cp ../config .config
-          rm -r feeds.conf.default && cp ../feeds.conf.default feeds.conf.default
-          cat .config
-          cat feeds.conf.default
+          rm -r ./.config && cp ../config ./.config
+          rm -r ./feeds.conf.default && cp ../feeds.conf.default ./feeds.conf.default
+          cat ./.config
+          cat ./feeds.conf.default
           # make defconfig
           # ./scripts/feeds update -a
           # ./scripts/feeds install -a
