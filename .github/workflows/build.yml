@@ -42,7 +42,6 @@ jobs:
 
       - name: Build for recomputer-gateway
         run: |
-          source $HOME/.cargo/env
           git submodule update --init --recursive && cd openwrt
           rm -r feeds.conf.default && cp ../feeds.conf.default feeds.conf.default
           ./scripts/feeds update -a
@@ -50,6 +49,7 @@ jobs:
           make defconfig
           rm -r .config && cp ../.config .config
           make defconfig
+          source $HOME/.cargo/env
           make -j$(nproc) V=s
       
       - name: Upload recomputer-gateway artifacts
