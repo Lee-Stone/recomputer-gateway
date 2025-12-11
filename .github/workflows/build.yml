@@ -41,8 +41,8 @@ jobs:
           ls -la
           make defconfig
           cat .config
-          rm -r ./config && cp ../.config ./.config
-          rm -r ./feeds.conf.default && cp ../feeds.conf.default ./feeds.conf.default
+          rm -r .config && cp ../.config .config
+          rm -r feeds.conf.default && cp ../feeds.conf.default feeds.conf.default
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           make defconfig
