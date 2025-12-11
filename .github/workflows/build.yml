@@ -40,12 +40,10 @@ jobs:
           git submodule update --init --recursive && cd openwrt
           cp ../.config ./.config
           rm -r ./feeds.conf.default && cp ../feeds.conf.default ./feeds.conf.default
-          cat .config
-          cat feeds.conf.default
-          # make defconfig
-          # ./scripts/feeds update -a
-          # ./scripts/feeds install -a
-          # make -j$(nproc) V=s
+          make defconfig
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+          make -j$(nproc) V=s
       
       - name: Upload recomputer-gateway artifacts
         uses: actions/upload-artifact@v4
