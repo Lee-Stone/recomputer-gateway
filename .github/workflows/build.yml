@@ -19,11 +19,6 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
       - name: Freeing up disk space
         uses: easimon/maximize-build-space@master
         with: 
@@ -34,6 +29,11 @@ jobs:
           remove-haskell: 'true'
           remove-codeql: 'true'
           remove-docker-images: 'true'
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Initialization environment
         env:
